@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossos 4 Anos - Gustavo & Letícia</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for elegant typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles and font definitions */
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #1a1a1a; /* Dark background for a romantic feel */
+            color: #f0e6e6; /* Soft white text */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Style for the "handwritten" letters */
+        .carta {
+            background-color: #fdfaf6;
+            color: #333;
+            padding: 1.5rem; /* Adjusted padding for mobile */
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: rotate(-2deg);
+            transition: transform 0.3s ease-in-out;
+        }
+        .carta:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+        /* Style for the sealed envelope */
+        .envelope {
+            background-color: #e0dcd3;
+            color: #4a4a4a;
+            padding: 2rem 1.5rem; /* Adjusted padding for mobile */
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 120px solid transparent; /* Smaller flap for mobile */
+            border-right: 120px solid transparent;
+            border-top: 80px solid #c7c1b8;
+            z-index: 1;
+        }
+        .envelope-content {
+            margin-top: 40px; /* Adjusted margin */
+        }
+        /* Animation for elements fading in on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Timeline Styles */
+        .timeline-item {
+            position: relative;
+            /* Mobile: all items on the right of the line */
+            padding-left: 3rem; /* 1rem (line pos) + 2rem (gap) */
+        }
+        .timeline-dot {
+            position: absolute;
+            /* Position on the line */
+            left: 1rem; /* same as line's left position */
+            top: 0.5rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #1a1a1a; /* body bg */
+            border: 4px solid #a78bfa; /* purple-400 */
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+        .timeline-content {
+            background-color: #374151; /* gray-700 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        /* Desktop timeline */
+        @media (min-width: 768px) {
+            .timeline-item {
+                width: 50%;
+                padding-left: 0;
+                padding-right: 4rem; /* Space between content and line */
+            }
+            .timeline-item:nth-child(even) {
+                margin-left: 50%;
+                padding-left: 4rem; /* Space between content and line */
+                padding-right: 0;
+            }
+            .timeline-item:nth-child(odd) .timeline-dot {
+                left: 100%;
+            }
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 0;
+            }
+            .timeline-content::before {
+                content: ''; position: absolute; top: 1rem; width: 0; height: 0; border-style: solid;
+            }
+            .timeline-item:nth-child(odd) .timeline-content::before {
+                right: -0.75rem; border-width: 0.5rem 0 0.5rem 0.75rem; border-color: transparent transparent transparent #374151;
+            }
+            .timeline-item:nth-child(even) .timeline-content::before {
+                left: -0.75rem; border-width: 0.5rem 0.75rem 0.5rem 0; border-color: transparent #374151 transparent transparent;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white leading-relaxed">
+
+    <!-- Countdown Section -->
+    <div id="countdown-section" class="min-h-screen flex flex-col items-center justify-center text-center p-6 bg-gray-900">
+        <div class="max-w-2xl mx-auto">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-light text-purple-300 mb-4" style="font-family: 'Playfair Display', serif;">Gustavo & Letícia</h1>
+            <p class="text-lg md:text-xl text-gray-400 mb-10">Uma contagem regressiva para o nosso momento especial.</p>
+            
+            <div id="timer" class="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6 text-center">
+                <!-- Days -->
+                <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <span id="days" class="text-4xl md:text-6xl font-semibold text-white">00</span>
+                    <p class="text-sm text-purple-300 uppercase tracking-widest mt-2">Dias</p>
+                </div>
+                <!-- Hours -->
+                <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <span id="hours" class="text-4xl md:text-6xl font-semibold text-white">00</span>
+                    <p class="text-sm text-purple-300 uppercase tracking-widest mt-2">Horas</p>
+                </div>
+                <!-- Minutes -->
+                <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <span id="minutes" class="text-4xl md:text-6xl font-semibold text-white">00</span>
+                    <p class="text-sm text-purple-300 uppercase tracking-widest mt-2">Minutos</p>
+                </div>
+                <!-- Seconds -->
+                <div class="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
+                    <span id="seconds" class="text-4xl md:text-6xl font-semibold text-white">00</span>
+                    <p class="text-sm text-purple-300 uppercase tracking-widest mt-2">Segundos</p>
+                </div>
+            </div>
+
+            <p class="mt-10 text-gray-500 text-base">Para celebrar 4 anos de uma história de amor.</p>
+        </div>
+    </div>
+
+    <!-- Main Content - Hidden until countdown finishes -->
+    <main id="main-content" class="hidden">
+        
+        <!-- Hero Section after countdown -->
+        <header class="min-h-screen flex items-center justify-center text-center p-4 bg-cover bg-center" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/1200x800/8B5CF6/FFFFFF?text=Feliz+4+Anos%21');">
+            <div>
+                <h1 class="text-5xl md:text-8xl font-extrabold reveal">Feliz 4 Anos, Meu Amor!</h1>
+                <p class="text-xl md:text-4xl mt-4 reveal">Uma celebração da nossa jornada.</p>
+                <svg class="w-12 h-12 mx-auto mt-20 text-white animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </header>
+
+        <!-- Section 1: The Beginning -->
+        <section class="py-16 px-4 md:px-10 max-w-4xl mx-auto">
+            <div class="reveal">
+                <p class="text-lg md:text-xl mb-8 text-center">Hoje, ao pensar em como começar a celebrar nossos 4 anos, eu fiz algo: voltei no tempo. Fui procurar a primeira declaração de amor que te fiz. E eu achei. Aquela mensagem que te mandei com um mês de namoro.</p>
+                <p class="text-lg md:text-xl mb-12 text-center">Quero que você a leia de novo primeiro, para se lembrar daquele nosso começo:</p>
+                
+                <blockquote class="bg-gray-800 border-l-4 border-purple-400 p-6 rounded-r-lg italic text-gray-300 text-base md:text-lg">
+                    <p>"oiii minha princesa, hoje fez um mes amor, as vezes é até dificil acreditar q eu te namoro, mas as vezes é tao facil tb, como eu ja te disse desde o começo eu sabia q era vc q eu queria ter pra sempre, q era cm vc q eu ia ter nossos 2 filhos, a maju e o menininho, q era com vc q eu ia passar o resto da minha vida, e tudo q eu mais quero nesse mundo é poder te sentir logo, poder falar um eu te amo mas agr olhando nesse seu rostinho lindo, eu n sou bom com textos amor, entao vou tentar falar tudo q eu sinto, eu te amo muito vida e vc é a coisa mais importante da minha vida, as vezes eu fico pensando e tenho medo do estrago q vai ser se a gente se separar, eu te amo tanto leticia, eu acho q vc n tem noçao, as vezes so queria pular p daq 3 meses e viver minha vida com vc sem nenhuma preocupaçao, vc veio na fase q eu mais precisava e eu te amo muito por tudo q vc fez e faz amor, vc é a mulher mais linda desse mundo todinho e a mais gostosa tb, vida eu quero vc p sempre, esse é nosso primeiro mes de mais infinitos meses, eu sou muito feliz ao seu lado, eu te amo minha princesa💜 e vc sempre sera minha princesa"</p>
+                </blockquote>
+
+                <p class="text-lg md:text-xl mt-12 text-center">Lendo isso agora, 47 meses depois, eu sorrio. Sorrio da ansiedade daquele garoto, do jeito meio sem jeito de escrever, mas admiro a certeza absoluta que ele já tinha no coração. Ele não fazia ideia dos desafios que viriam, das alegrias que o esperavam, nem de como esse amor se tornaria a base de tudo na vida dele.</p>
+                <p class="text-lg md:text-xl mt-4 text-center">Aquele Gustavo sonhava em pular no tempo. O Gustavo de hoje agradece por não ter pulado um único dia dessa jornada com você. Aquelas palavras não eram uma promessa vazia; eram a semente de tudo que construímos juntos.</p>
+                <p class="text-lg md:text-xl mt-4 text-center">Esta carta não vem do passado, mas é a minha homenagem a ele e ao primeiro passo da nossa história.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Our Trajectory in Photos -->
+        <section class="py-16 bg-gray-800">
+            <div class="container mx-auto px-4">
+                <h2 class="text-4xl md:text-5xl text-center mb-12 reveal">Nossa Trajetória</h2>
+                
+                <!-- Timeline Container -->
+                <div class="relative max-w-4xl mx-auto">
+                    <!-- Vertical Line -->
+                    <div class="absolute top-0 h-full w-1 bg-purple-300/30 left-4 md:left-1/2 md:-translate-x-1/2"></div>
+
+                    <!-- Timeline Items Wrapper -->
+                    <div class="space-y-12">
+                        
+                        <!-- Item 1 -->
+                        <div class="reveal timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <img src="img/foto2.jpeg" alt="Foto do nosso começo" class="w-full h-auto object-cover rounded-lg shadow-lg mb-3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Foto+n%C3%A3o+encontrada';">
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">O Início de um Sonho</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Onde cada olhar era uma promessa e cada sorriso, o começo da nossa história.</p>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="reveal timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <img src="img/foto11.jpeg" alt="Momento especial nosso" class="w-full h-auto object-cover rounded-lg shadow-lg mb-3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Foto+n%C3%A3o+encontrada';">
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Construindo Memórias</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Cada momento, simples ou grandioso, se tornou um tijolo na construção do nosso amor.</p>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="reveal timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <img src="img/foto10.jpeg" alt="Nossas risadas" class="w-full h-auto object-cover rounded-lg shadow-lg mb-3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Foto+n%C3%A3o+encontrada';">
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">A Alegria de Estar Junto</h3>
+                                <p class="text-gray-300 text-sm md:text-base">As risadas que ecoam e os abraços que confortam. A felicidade mora nos detalhes que compartilhamos.</p>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="reveal timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <img src="img/foto4.jpeg" alt="Sempre juntos" class="w-full h-auto object-cover rounded-lg shadow-lg mb-3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Foto+n%C3%A3o+encontrada';">
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Crescendo Lado a Lado</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Enfrentando o mundo, apoiando os sonhos um do outro e nos tornando mais fortes, juntos.</p>
+                            </div>
+                        </div>
+
+                        <!-- Item 5 -->
+                        <div class="reveal timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <img src="img/foto14.jpeg" alt="Nosso refúgio" class="w-full h-auto object-cover rounded-lg shadow-lg mb-3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Foto+n%C3%A3o+encontrada';">
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">Nosso Refúgio</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Na calmaria do dia a dia, encontramos nosso porto seguro. O amor que floresce na rotina.</p>
+                            </div>
+                        </div>
+
+                        <!-- Item 6 -->
+                        <div class="reveal timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <img src="img/foto7.jpeg" alt="Foto nossa recente" class="w-full h-auto object-cover rounded-lg shadow-lg mb-3" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/FFFFFF?text=Foto+n%C3%A3o+encontrada';">
+                                <h3 class="text-xl md:text-2xl font-bold mb-2">O Amor que Permanece</h3>
+                                <p class="text-gray-300 text-sm md:text-base">Hoje, olhamos para trás com carinho e para o futuro com a certeza de que o melhor ainda está por vir.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Where We Are Now -->
+        <section class="py-16 px-4 md:px-10 max-w-4xl mx-auto">
+            <div class="reveal carta">
+                <h2 class="text-3xl md:text-4xl mb-6 text-center">Para a Letícia, do Gustavo de hoje.</h2>
+                <p class="mb-4">Meu amor,</p>
+                <p class="mb-4">Hoje, completando quatro anos ao seu lado, reafirmo a certeza de que fiz a escolha certa para a minha vida. Você é a mulher que eu quero ter comigo para sempre: essa pessoa linda, companheira, meiga, amável e tão fofa.</p>
+                <p class="mb-4">Lembro da minha primeira declaração, quando meu maior sonho era avançar três meses no tempo só para finalmente te encontrar. Mal sabia eu que a nossa jornada seria infinitamente mais rica, desafiadora e incrível do que eu poderia imaginar. Nós não pulamos o tempo, nós o vivemos intensamente. Atravessamos cada fase, superamos cada dificuldade que nos fortaleceu, celebramos cada conquista e guardamos cada risada boba como uma preciosa memória.</p>
+                <p class="mb-4">Aquele amor inicial, tão grande que me assustava, não apenas persistiu, ele evoluiu. Amadureceu e criou raízes tão profundas que hoje, a ideia de um "estrago" já não me assusta, pois a nossa construção é sólida e verdadeira.</p>
+                <p class="mb-4">Para mim, você continua sendo a mulher mais linda do mundo, mas hoje consigo enxergar em você belezas que antes eram invisíveis aos meus olhos.</p>
+                <p class="mb-4">Obrigado por estes 1461 dias de parceria. Obrigado por ser essa mulher incrível, que supera todas as expectativas daquele garoto sonhador de quatro anos atrás.</p>
+                <p class="mb-4">Você sempre será a minha princesa, mas hoje é muito mais do que isso: é minha parceira de vida, minha melhor amiga, o meu amor.</p>
+                <p class="mb-4">Quatro anos parecem pouco perto de todo o futuro que nos espera. Temos um mundo a construir e barreiras a ultrapassar, mas sei que tudo dará certo, porque terei você ao meu lado.</p>
+                <p class="mb-4">Prometo me dedicar a ser o amor da sua vida por, no mínimo, mais oitenta anos. Sua felicidade é a minha; seu sorriso é o meu refúgio.</p>
+                <p class="mt-8 text-right">Com muito amor,<br>Seu Gustavo.</p>
+            </div>
+        </section>
+
+
+        <footer class="text-center py-10 px-4">
+            <p>Feito com todo o amor do mundo, para a mulher da minha vida.</p>
+            <p>&copy; 2025 - Gustavo para Letícia</p>
+        </footer>
+
+    </main>
+
+    <!-- Confetti library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // --- CONFIGURAÇÃO DA DATA DO ANIVERSÁRIO ---
+        // IMPORTANTE: Altere a data abaixo para a data exata em que vocês completam 4 anos.
+        // Formato: Ano, Mês (0-11), Dia, Hora, Minuto, Segundo
+        // Exemplo: 25 de Dezembro de 2025 às 20:30:00 -> new Date(2025, 11, 25, 20, 30, 0)
+        const anniversaryDate = new Date(2025, 7, 26, 20, 00, 00).getTime();
+
+        const countdownSection = document.getElementById('countdown-section');
+        const mainContent = document.getElementById('main-content');
+        
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        // Moved declaration to the top-level scope
+        let countdownInterval;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = anniversaryDate - now;
+
+            if (distance < 0) {
+                // Clear interval using the globally scoped variable
+                clearInterval(countdownInterval);
+                showCelebration();
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            daysEl.innerText = String(days).padStart(2, '0');
+            hoursEl.innerText = String(hours).padStart(2, '0');
+            minutesEl.innerText = String(minutes).padStart(2, '0');
+            secondsEl.innerText = String(seconds).padStart(2, '0');
+        }
+
+        function showCelebration() {
+            countdownSection.style.display = 'none';
+            mainContent.style.display = 'block';
+
+            // Simplified and more stable confetti effect
+            const end = Date.now() + (5 * 1000); // 5 seconds
+            const colors = ['#a78bfa', '#f472b6', '#fbbf24', '#ffffff'];
+
+            (function frame() {
+              confetti({
+                particleCount: 2,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: colors
+              });
+              confetti({
+                particleCount: 2,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: colors
+              });
+
+              if (Date.now() < end) {
+                requestAnimationFrame(frame);
+              }
+            }());
+
+
+            // Initialize Intersection Observer for reveal animations
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Animate only once
+                    }
+                });
+            }, {
+                threshold: 0.15 // Trigger when 15% of the element is visible
+            });
+
+            revealElements.forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Check immediately if the date has passed
+        if (new Date().getTime() >= anniversaryDate) {
+            showCelebration();
+        } else {
+            updateCountdown(); // Initial call to avoid 1s delay
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+    </script>
+
+</body>
+</html>
